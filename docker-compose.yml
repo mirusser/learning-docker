@@ -1,0 +1,55 @@
+#how to run, command: docker-compose -p "dev-containers" up
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:14.2-alpine
+    container_name: postgres-14.2-alpine
+    restart: unless-stopped
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: postgres #use real username here
+      POSTGRES_PASSWORD: zaq1@WSX #use real, more sophisticated password here
+      POSTGRES_DB: postgres #this is optional
+    volumes:
+      - postgres:/var/lib/postgresql/data/
+  mongo:
+    image: 'mongo:latest'
+    container_name: mongo-latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo:/data/db
+  elastic:
+    image: "elasticsearch:7.17.10"
+    container_name: elastic-7.17.10
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms700m -Xmx700m"
+    volumes:
+      - elastic:/usr/share/elasticsearch/data
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver-latest
+    user: root
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=zaq1@WSX #use real, more sophisticated password here
+    volumes:
+      - sqlserver:/var/opt/mssql
+    ports:
+      - 1434:1433
+
+volumes:
+  postgres:
+    driver: local
+  mongo:
+    driver: local
+  elastic:
+    driver: local
+  sqlserver:
+    driver: local
